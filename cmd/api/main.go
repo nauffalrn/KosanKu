@@ -17,6 +17,7 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // mendaftarkan driver "pgx" untuk database/sql
+	"github.com/joho/godotenv"
 
 	"kosanku-api/internal/config"
 	"kosanku-api/internal/platform/database"
@@ -30,6 +31,10 @@ func main() {
 }
 
 func run() error {
+	// Muat .env jika ada (berguna di Windows yang tidak punya make).
+	// Variabel yang sudah di-set di environment tidak ditimpa.
+	_ = godotenv.Load()
+
 	cfg, err := config.Load()
 	if err != nil {
 		return err

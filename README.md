@@ -92,14 +92,14 @@ MCP (nanti) ──┘
 
 - Go 1.24 atau lebih baru
 - Docker Desktop (untuk PostgreSQL)
-- `make` (Windows: pakai Git Bash/WSL, atau jalankan perintah di Makefile secara manual)
+- `make` (opsional; di Windows lihat bagian "Windows tanpa make")
 - `golangci-lint` v2 (opsional, untuk `make lint`)
 
 ### Langkah pertama kali
 
 ```bash
-cp .env.example .env     # buat konfigurasi lokal
-make setup               # download pgx dan goose, isi go.sum
+cp .env.example .env     # buat konfigurasi lokal (Windows CMD: copy .env.example .env)
+go mod download          # download dependency sesuai go.mod
 make db-up               # jalankan PostgreSQL di Docker
 make migrate-up          # buat tabel
 make run                 # jalankan API di http://localhost:8080
@@ -165,6 +165,22 @@ Jalankan `make` tanpa argumen untuk melihat semua perintah.
 | `make migrate-new name=create_tenants` | Buat file migration baru |
 | `make migrate-status` | Lihat migration yang sudah/belum jalan |
 
+### Windows tanpa make
+
+Jalankan dari folder project di CMD atau PowerShell. `go run` otomatis membaca `.env`.
+
+| Setara dengan | Perintah |
+|---|---|
+| `make db-up` | `docker compose up -d --wait` |
+| `make migrate-up` | `go tool goose -dir migrations postgres "postgres://kosanku:kosanku@localhost:5432/kosanku?sslmode=disable" up` |
+| `make migrate-status` | sama seperti di atas, ganti `up` dengan `status` |
+| `make migrate-new name=x` | `go tool goose -dir migrations -s create x sql` |
+| `make run` | `go run ./cmd/api` |
+| `make test` | `go test ./...` |
+| `make lint` | `golangci-lint run ./...` |
+
+Sesuaikan connection string jika isi `DATABASE_URL` di `.env` berbeda.
+
 ---
 
 ## Checklist menambah modul fitur baru
@@ -183,7 +199,8 @@ Contoh: modul `tenant`.
 ## Roadmap
 
 - [x] Fondasi project + modul `room`
-- [ ] Modul `tenant`, `lease`, `billing` (invoice + payment), `ticket`
+- [x] Desain model data inti (lihat [docs/data-model.md](docs/data-model.md))
+- [ ] Modul `tenant`, `lease`, `billing` (invoice + payment), `settings`, `ticket`
 - [ ] Autentikasi admin
 - [ ] Dokumentasi OpenAPI (kontrak untuk frontend)
 - [ ] MCP server lokal (stdio) dengan tool baca
