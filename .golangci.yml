@@ -1,0 +1,22 @@
+version: "2"
+
+linters:
+  enable:
+    - bodyclose      # response body HTTP harus ditutup
+    - errorlint      # pakai errors.Is/As, bukan == atau type assertion
+    - gocritic       # saran gaya dan bug umum
+    - revive         # pengganti golint, termasuk wajib doc comment untuk yang di-export
+    - rowserrcheck   # rows.Err() harus dicek
+    - sqlclosecheck  # rows/stmt SQL harus ditutup
+    - unconvert      # konversi tipe yang tidak perlu
+  settings:
+    errcheck:
+      # Pola idiomatis `defer x.Close()` tidak perlu dicek errornya.
+      exclude-functions:
+        - (*database/sql.DB).Close
+        - (*database/sql.Rows).Close
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

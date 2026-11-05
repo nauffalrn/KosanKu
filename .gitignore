@@ -1,0 +1,12 @@
+# Environment
+.env
+
+# Build & test output
+/bin/
+*.test
+coverage.out
+
+# Editor
+.idea/
+.vscode/
+.DS_Store
